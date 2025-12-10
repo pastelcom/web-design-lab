@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake Cursor</title>
+    <style>
+      /* Fullscreen */
+      html {
+        height: 100%;
+        overflow: hidden; /* Prevent scrollbars */
+      }
+      body {
+        height: 100%; /* Fullscreen */
+        font-family: sans-serif;
+        margin: 0;
+      }
+      .snake {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none; /* Hide initially */
+
+        font-weight: bold;
+        font-size: 24px;
+        border: 1px solid black;
+        border-radius: 1em;
+        padding: 8px 16px;
+        background-color: lightgrey;
+      }
+      h1 {
+        /* Move to bottom left corner */
+        position: absolute;
+        bottom: 50px;
+        left: 50px;
+
+        font-size: 72px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Snake Cursor</h1>
+    <span class="snake" style="background-color: lightcoral">Graphic Design</span>
+    <span class="snake" style="background-color: lightgreen">UX / UI</span>
+    <span class="snake" style="background-color: thistle">Product Design</span>
+    <span class="snake" style="background-color: lightpink">Branding</span>
+    <span class="snake" style="background-color: gold">something 2</span>
+    <span class="snake" style="background-color: lightskyblue">something 3</span>
+    <script>
+      const snakes = [...document.querySelectorAll(".snake")];
+
+      const MAX_SNAKES = snakes.length;
+
+      let lastX = 0;
+      let lastY = 0;
+      let activeSnakes = [];
+      let nextIndex = 0;
+
+      document.body.addEventListener("mousemove", (e) => {
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Get the next snake to determine spawn distance
+        const nextSnake = snakes[nextIndex % snakes.length];
+        const spawnDistance = nextSnake.offsetWidth;
+
+        if (distance >= spawnDistance) {
+          // Remove oldest snake if at max capacity
+          if (activeSnakes.length >= MAX_SNAKES) {
+            activeSnakes.shift().style.display = "none";
+          }
+
+          const snake = snakes[nextIndex++ % snakes.length];
+          snake.style.display = "block"; // Unhide the element
+          snake.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; // Position at cursor
+          snake.style.zIndex += 1; // Bring to front
+          activeSnakes.push(snake); // Add to active snakes
+
+          // Update last position
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
+      });
+    </script>
+  </body>
+</html>
